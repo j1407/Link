@@ -1,9 +1,18 @@
-var isStarted = false;
-var btn = document.getElementById('btn');
-var txt = document.getElementById('txt');
+var date;
 
-document.addEventListener("DOMContentLoaded", function(){
-    document.getElementById('btn').addEventListener('click', function(){
-        txt.value = "AAAAAAAAA";
+document.getElementById('btn').onclick = btnClick;
+
+//ボタンクリック時にcontent_scriptから日付を受け取りhtml上で表示
+function btnClick(){
+  chrome.tabs.query({active : true, currentWindow : true}, function(tabs){
+    chrome.tabs.sendMessage(tabs[0].id, { type : "date"}, function(response){
+      if(response)
+        date = response;
+      else
+        date = "message passing failed";
     });
-}, false);
+  });
+
+  //テキスト書き換え
+  document.getElementById('txt').value = date;
+}

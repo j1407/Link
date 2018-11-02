@@ -8,3 +8,19 @@ window.onload = function(){
   var line = head.slice(start,end);           //１行抜き出し
   date = line.replace(/[^0-9]/g,"");          //日付を抜き出し
 }
+
+//popup.jsに日付を返す
+chrome.runtime.onMessage.addListener(
+  function(message, sender, sendResponse){
+    switch(message.type)
+    {
+      case "date":
+        sendResponse(date);
+        break;
+      default:
+        sendResponse("unknown type");
+        break;
+    }
+
+    return true;
+});
