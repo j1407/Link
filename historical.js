@@ -1,4 +1,5 @@
 var date;
+var url;
 
 //waybackMachineのページが読み込まれたときに実行
 window.onload = function(){
@@ -6,25 +7,23 @@ window.onload = function(){
   var start = head.indexOf("WB_wombat_Init"); //WB_wombat_Initの開始位置
   var end = head.indexOf(';',start);          //行末の位置
   var line = head.slice(start,end);           //１行抜き出し
+  //lineは WB_wombat_Init('waybackmachineのurl','日付','保存されているページのurl');
   date = line.replace(/[^0-9]/g,"");          //日付を抜き出し
-  chrome.storage.local.set({ 'date' : date });
-  chrome.storage.local.set({ 'url' : location.href });
+
+  //いろいろ微調整
+  start = line.indexOf('\'',line.indexOf(',',line.indexOf(',')+1)+1) + 1;
+  end = line.lastIndexOf('\'');
+  url = line.slice(start,end);
 }
 
-window.onunload = function(){
-  chrome.storage.local.remove("date");
-  chrome.storage.local.remove("url");
-}
-
-//popup.jsに日付を返す
+//メッセージ返信
 chrome.runtime.onMessage.addListener( function(message, sender, sendResponse){
-  switch(message.type)
-  {
+  switch(message.type){
     case "date":
       sendResponse(date);
       break;
     case "url":
-      sendResponse(location.href);
+      sendResponse(url);
       break;
     default:
       sendResponse("unknown type");
