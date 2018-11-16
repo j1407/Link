@@ -1,5 +1,8 @@
 var date;
 var url;
+var link = document.getElementsByTagName('a');
+const api_url = "https://archive.org/wayback/available";
+var request_url = "http://www.matsue-ct.jp/m/index.php";
 
 //waybackMachineのページが読み込まれたときに実行
 window.onload = function(){
@@ -12,8 +15,19 @@ window.onload = function(){
 
   //いろいろ微調整
   start = line.indexOf('\'',line.indexOf(',',line.indexOf(',')+1)+1) + 1;
-  end = line.lastIndexOf('\'');
-  url = line.slice(start,end);
+  if(line.indexOf(':'))
+    end = line.indexOf(':');
+  else
+    end = line.lastIndexOf('\'');
+  //url = line.slice(start,end);
+
+  $.getJSON(`${api_url}?url=${request_url}&callback=?`, function(json){
+    console.log(json);
+  });
+
+  for(var i=0; i<link.length; i++){
+    link[i].onclick = linkClick;
+  }
 }
 
 //メッセージ返信
@@ -30,3 +44,7 @@ chrome.runtime.onMessage.addListener( function(message, sender, sendResponse){
       break;
   }
 });
+
+function linkClick(){
+  url = this.href;
+}
