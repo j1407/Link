@@ -5,7 +5,7 @@ var sw = document.getElementById('flag');
 sw.onclick = swClick;
 button.onclick = btnClick;
 
-//ボタンクリック時にcontent_scriptから日付を受け取りhtml上で表示
+//ボタンクリック時にcontent_script(historical.js)から日付を受け取りhtml上で表示
 function btnClick(){
   chrome.tabs.query({active : true, currentWindow : true}, function(tabs){
     chrome.tabs.sendMessage(tabs[0].id, { type : "url" }, function(response){
